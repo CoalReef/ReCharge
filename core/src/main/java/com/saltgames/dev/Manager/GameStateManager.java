@@ -1,5 +1,6 @@
 package com.saltgames.dev.Manager;
 
+import com.badlogic.gdx.Gdx;
 import com.saltgames.dev.Main;
 import com.saltgames.dev.States.PlayState;
 import com.saltgames.dev.States.State;
@@ -22,7 +23,7 @@ public class GameStateManager {
     }
 
     public void update() {
-        states.peek().update();
+        states.peek().update(Gdx.graphics.getDeltaTime());
     }
 
     public void render() {

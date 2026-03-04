@@ -6,7 +6,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import com.saltgames.dev.GameObjects.Player;
 import com.saltgames.dev.Manager.GameStateManager;
 
@@ -20,6 +20,8 @@ public class PlayState extends State{
     OrthographicCamera cam;
     Player player;
     World world;
+    BodyDef mapBodyDef;
+    Body mapBody;
 
     public PlayState(GameStateManager gsm) {
 
@@ -33,13 +35,19 @@ public class PlayState extends State{
         cam.setToOrtho(false, 16, 9);
 
         // Create the Box2D World
-        world = new World(new Vector2(0, 9.8f), true);
+        world = new World(new Vector2(0, -0.08f), true);
 
         // Create the player object
-        player = new Player(8, 4.5f, 1, cam);
+        player = new Player(8, 4.5f, 1, cam, world);
+
+        // Create hitboxes for the map
+        mapBodyDef = new BodyDef();
+        mapBodyDef.type = BodyDef.BodyType.StaticBody;
+
     }
 
     public void update(float dt) {
+        player.handleInput();
         world.step(dt, 6, 2);
     }
 
