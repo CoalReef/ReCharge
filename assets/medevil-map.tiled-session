@@ -1,0 +1,68 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "industrial-siles.tsx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "Spritesheet.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 3,
+            "scaleInEditor": 1
+        },
+        "background-lyr-1.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "background-lyr-2.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "industrial-box-map.tmx": {
+            "expandedObjectLayers": [
+                3,
+                4,
+                2
+            ],
+            "scale": 1,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 733,
+                "y": 915
+            }
+        },
+        "industrial-siles.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "last.imagePath": "C:/Users/monst/Downloads/craftpix-net-314143-free-industrial-zone-tileset-pixel-art/2 Background",
+    "map.height": 45,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 32,
+    "map.tileWidth": 32,
+    "map.width": 45,
+    "openFiles": [
+        "Spritesheet.tsx",
+        "industrial-siles.tsx",
+        "industrial-box-map.tmx"
+    ],
+    "project": "medevil-map.tiled-project",
+    "recentFiles": [
+        "Spritesheet.tsx",
+        "industrial-box-map.tmx",
+        "industrial-siles.tsx",
+        "background-lyr-2.tsx",
+        "background-lyr-1.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    },
+    "tileset.type": 1
+}

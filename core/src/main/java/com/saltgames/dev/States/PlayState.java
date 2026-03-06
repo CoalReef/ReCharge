@@ -36,8 +36,8 @@ public class PlayState extends State{
         this.gsm = gsm;
 
         // Set up the map variables & camera
-        map = new TmxMapLoader().load("Polished Test Map.tmx");
-        mapRenderer = new OrthogonalTiledMapRenderer(map, 1/16f); // 1 World tile = 16 Pixels
+        map = new TmxMapLoader().load("industrial-box-map.tmx");
+        mapRenderer = new OrthogonalTiledMapRenderer(map, 1/32f); // 1 World tile = 16 Pixels
         cam = new OrthographicCamera();
         cam.setToOrtho(false, 32, 18);
 
@@ -51,7 +51,7 @@ public class PlayState extends State{
         debugRenderer = new Box2DDebugRenderer();
 
         // Get the layer and objects meant for collision
-        collisionLayer = map.getLayers().get("Obstacle collisions");
+        collisionLayer = map.getLayers().get("PlatformCollisions");
         collisionLayerObjects = collisionLayer.getObjects();
 
         // Loop through the collision objects and give them all hitboxes
@@ -62,10 +62,10 @@ public class PlayState extends State{
             MapProperties mapProperties = mapObj.getProperties();
 
             // Store the properties as variables and perform calculations for accurate use
-            float bodyXPos = mapProperties.get("x", Float.class) / 16f;
-            float bodyYPos = mapProperties.get("y", Float.class) / 16f;
-            float fixtureWidth = mapProperties.get("width", Float.class) / 16f;
-            float fixtureHeight = mapProperties.get("height", Float.class) / 16f;
+            float bodyXPos = mapProperties.get("x", Float.class) / 32f;
+            float bodyYPos = mapProperties.get("y", Float.class) / 32f;
+            float fixtureWidth = mapProperties.get("width", Float.class) / 32f;
+            float fixtureHeight = mapProperties.get("height", Float.class) / 32f;
 
             // Find center of platform for body placment
             float oppositeX = bodyXPos + fixtureWidth;
