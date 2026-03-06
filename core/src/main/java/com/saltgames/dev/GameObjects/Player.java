@@ -35,6 +35,7 @@ public class Player {
         // Create the shape renderer for the player rect (temp)
         shape = new ShapeRenderer();
 
+
         // Create the player Box2D body
         bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -69,7 +70,7 @@ public class Player {
     public void render() {
         shape.setProjectionMatrix(cam.combined);
         shape.begin(ShapeRenderer.ShapeType.Filled);
-        shape.rect(body.getPosition().x, body.getPosition().y, 0.5f, 0.5f); // Body positions make sprite follow hitbox
+        shape.rect(body.getPosition().x - 0.5f, body.getPosition().y - 0.5f, 1f, 1f); // Body positions make sprite follow hitbox
         shape.end();
     }
 
