@@ -17,7 +17,7 @@ public class GameStateManager {
         this.main = main;
     }
 
-    public void SetState(State stateToSet) {
+    public void setState(State stateToSet) {
         states.pop().dispose();
         states.push(stateToSet);
     }
@@ -32,5 +32,9 @@ public class GameStateManager {
 
     public void dispose() {
         states.peek().dispose();
+    }
+
+    public Main getMain() {
+        return main;
     }
 }

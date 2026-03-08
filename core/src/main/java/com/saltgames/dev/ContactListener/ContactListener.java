@@ -3,12 +3,14 @@ package com.saltgames.dev.ContactListener;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.saltgames.dev.GameObjects.DeathHitbox;
 import com.saltgames.dev.GameObjects.Platform;
 import com.saltgames.dev.GameObjects.Player;
 
 public class ContactListener implements com.badlogic.gdx.physics.box2d.ContactListener {
 
     private boolean isGrounded = false;
+    private boolean isOnDamageBox = false;
 
     @Override
     public void beginContact(Contact contact) {
@@ -17,6 +19,8 @@ public class ContactListener implements com.badlogic.gdx.physics.box2d.ContactLi
 
         if (objectA instanceof Player && objectB instanceof Platform) {
             isGrounded = true;
+        } else if (objectA instanceof Player && objectB instanceof DeathHitbox) {
+            isOnDamageBox = true;
         }
     }
 
@@ -27,6 +31,8 @@ public class ContactListener implements com.badlogic.gdx.physics.box2d.ContactLi
 
         if (objectA instanceof Player && objectB instanceof Platform) {
             isGrounded = false;
+        } else if (objectA instanceof Player && objectB instanceof DeathHitbox) {
+            isOnDamageBox = false;
         }
     }
 
@@ -42,6 +48,14 @@ public class ContactListener implements com.badlogic.gdx.physics.box2d.ContactLi
 
     public boolean isGrounded() {
         if (isGrounded) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isOnDamageBox() {
+        if (isOnDamageBox) {
             return true;
         } else {
             return false;

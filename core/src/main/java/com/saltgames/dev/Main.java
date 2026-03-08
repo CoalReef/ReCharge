@@ -20,15 +20,17 @@ public class Main extends ApplicationAdapter {
     @Override
     public void render() {
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
-        batch.begin();
         gsm.update();
         gsm.render();
-        batch.end();
     }
 
     @Override
     public void dispose() {
         batch.dispose();
         gsm.dispose();
+    }
+
+    public SpriteBatch getBatch() {
+        return batch;
     }
 }

@@ -4,9 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.saltgames.dev.ContactListener.ContactListener;
+import com.saltgames.dev.Manager.GameStateManager;
+import com.saltgames.dev.States.GameOver;
 
 public class Player {
     // Constructor defined variables
@@ -15,7 +16,8 @@ public class Player {
     int speed;
     OrthographicCamera cam;
     World world;
-    com.saltgames.dev.ContactListener.ContactListener contactListener;
+    ContactListener contactListener;
+    GameStateManager gsm;
 
     // Created within player object
     ShapeRenderer shape;
@@ -26,14 +28,15 @@ public class Player {
     PolygonShape hitboxShape;
     int jumpCounter = 0;
 
-    public Player (float xPos, float yPos, int speed, OrthographicCamera cam, World world, ContactListener contactListener) {
+    public Player (float xPos, float yPos, int speed, OrthographicCamera cam, World world, ContactListener contactListener, GameStateManager gsm) {
 
-        // Set the players starting coords and default speed and pass Player object the camera and world for Box2D
+        // Store given variables
         this.xPos = xPos;
         this.yPos = yPos;
         this.speed = speed;
         this.cam = cam;
         this.world = world;
+        this.gsm = gsm;
 
         // Create the shape renderer for the player rect (temp)
         shape = new ShapeRenderer();
@@ -95,7 +98,9 @@ public class Player {
 
 
     public void update() {
-
+        if (contactListener.isOnDamageBox()) {
+            gsm.setState(new GameOver(gsm, gsm.getMain().getBatch()));
+        }
     }
 
     public void render() {
