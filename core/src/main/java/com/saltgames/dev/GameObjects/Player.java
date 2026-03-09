@@ -67,14 +67,10 @@ public class Player {
 
         // Left and right movement with A and D
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            if (body.getLinearVelocity().x <= MAX_SPEED) {
-                body.applyLinearImpulse(5f, 0, 0, 0, true);
-            }
+            body.setLinearVelocity(5f, body.getLinearVelocity().y);
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            if (body.getLinearVelocity().x >= -MAX_SPEED) {
-                body.applyLinearImpulse(-5f, 0, 0, 0, true);
-            }
+            body.setLinearVelocity(-5f, body.getLinearVelocity().y);
         }
         else {
             body.setLinearVelocity(0, body.getLinearVelocity().y);
