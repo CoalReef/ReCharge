@@ -3,6 +3,7 @@ package com.saltgames.dev.ContactListener;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.saltgames.dev.GameObjects.Bullet;
 import com.saltgames.dev.GameObjects.DeathHitbox;
 import com.saltgames.dev.GameObjects.Platform;
 import com.saltgames.dev.GameObjects.Player;
@@ -11,6 +12,8 @@ public class ContactListener implements com.badlogic.gdx.physics.box2d.ContactLi
 
     private boolean isGrounded = false;
     private boolean isOnDamageBox = false;
+    private Bullet bulletToDelete;
+    private boolean bulletHitWall;
 
     @Override
     public void beginContact(Contact contact) {
@@ -21,6 +24,15 @@ public class ContactListener implements com.badlogic.gdx.physics.box2d.ContactLi
             isGrounded = true;
         } else if (objectA instanceof Player && objectB instanceof DeathHitbox) {
             isOnDamageBox = true;
+
+            // Return the bullet that needs to be deleted
+        } else if (objectA instanceof Platform && objectB instanceof Bullet || objectA instanceof Bullet && objectB instanceof Platform) {
+            bulletHitWall = true;
+            if (objectA instanceof Platform && objectB instanceof Bullet) {
+                bulletToDelete = (Bullet) objectB;
+            } else if ( objectA instanceof Bullet && objectB instanceof Platform) {
+                bulletToDelete = (Bullet) objectA;
+            }
         }
     }
 
@@ -33,6 +45,8 @@ public class ContactListener implements com.badlogic.gdx.physics.box2d.ContactLi
             isGrounded = false;
         } else if (objectA instanceof Player && objectB instanceof DeathHitbox) {
             isOnDamageBox = false;
+        } else if (objectA instanceof Platform && objectB instanceof Bullet || objectA instanceof Bullet && objectB instanceof Platform) {
+            bulletHitWall = false;
         }
     }
 
@@ -60,5 +74,17 @@ public class ContactListener implements com.badlogic.gdx.physics.box2d.ContactLi
         } else {
             return false;
         }
+    }
+
+    public boolean BulletHitWall() {
+        if (bulletHitWall) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public Bullet bulletToDelete() {
+        return bulletToDelete;
     }
 }

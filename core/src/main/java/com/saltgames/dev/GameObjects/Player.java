@@ -9,6 +9,8 @@ import com.saltgames.dev.ContactListener.ContactListener;
 import com.saltgames.dev.Manager.GameStateManager;
 import com.saltgames.dev.States.GameOver;
 
+import java.util.ArrayList;
+
 public class Player {
     // Constructor defined variables
     float xPos;
@@ -30,6 +32,8 @@ public class Player {
     Bullet bullet;
     int direction = 1; // Player will always start by looking right (0 = Left, 1 = Right)
     boolean bulletExists = false; // Track if bullet exists for rendering and update purposes
+    ArrayList<Bullet> bulletsArray;
+    Bullet hit;
 
     public Player (float xPos, float yPos, int speed, OrthographicCamera cam, World world, ContactListener contactListener, GameStateManager gsm) {
 
@@ -60,6 +64,9 @@ public class Player {
         hitboxShape.setAsBox(0.5f, 0.5f);
         fixtureDef.shape = hitboxShape;
         fixture = body.createFixture(fixtureDef);
+
+        // Initialize Bullet Array
+        bulletsArray = new ArrayList<Bullet>();
 
     }
 
@@ -99,6 +106,27 @@ public class Player {
         if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
             bullet = new Bullet(gsm, direction, shape, world, this);
             bulletExists = true;
+            bulletsArray.add(bullet);
+        }
+
+
+        // Check if the bullet hit a wall and should be deleted
+        if (contactListener.BulletHitWall()) {
+            hit = contactListener.bulletToDelete();
+
+            // Get rid of the hitbox
+            if (!world.isLocked()) {
+                world.destroyBody(hit.body);
+                if (bulletsArray.isEmpty()) {
+                    bulletExists = false;
+                }
+            }
+            bulletsArray.remove(hit);
+
+            // Check if there ARE bullets to stop rendering and updating if none exist
+            if (bulletsArray.isEmpty()) {
+                bulletExists = false;
+            }
         }
     }
 
@@ -110,7 +138,9 @@ public class Player {
 
         // Only call bullets update if it exists
         if (bulletExists) {
-            bullet.update();
+            for (int i = 0; i < bulletsArray.size(); i++) {
+                bulletsArray.get(i).update();
+            }
         }
     }
 
@@ -122,14 +152,21 @@ public class Player {
 
         // Only render the bullet if it even exists
         if (bulletExists) {
-            bullet.render();
+            for (int i = 0; i < bulletsArray.size(); i++) {
+                bulletsArray.get(i).render();
+            }
         }
     }
 
     public void dispose() {
         hitboxShape.dispose();
         shape.dispose();
-        bullet.dispose();
+
+        if (bulletExists) {
+            for (int i = 0; i < bulletsArray.size(); i++) {
+                bulletsArray.get(i).dispose();
+            }
+        }
     }
 
     // Getters and setters for position

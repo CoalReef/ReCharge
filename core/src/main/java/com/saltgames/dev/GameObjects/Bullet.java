@@ -22,6 +22,7 @@ public class Bullet {
     Body body;
     FixtureDef fixtureDef;
     Fixture fixture;
+    int bulletArrayIndex; // Keep track of where to reference in the array when the bullet is deleted
 
     public Bullet(GameStateManager gsm, int direction, ShapeRenderer shape, World world, Player player) {
         this.gsm = gsm;
@@ -37,34 +38,37 @@ public class Bullet {
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.gravityScale = 0f; // Keep bullet unaffected by gravity
         body = world.createBody(bodyDef);
+        body.setUserData(this); // Assign bullet as body type for collision detection
 
         fixtureDef = new FixtureDef();
         PolygonShape bulletShape = new PolygonShape();
-        bulletShape.setAsBox(1f, 1f);
+        bulletShape.setAsBox(0.15f, 0.15f);
         fixtureDef.shape = bulletShape;
         fixture = body.createFixture(fixtureDef);
+
+        // Done on creation so the impulse is only applied once
+        body.applyLinearImpulse(xVelocity, 0, body.getPosition().x, body.getPosition().y, true);
     }
 
     // Figure out the offset for the bullet spawn based on player direction their facing
     public void handleDirection() {
         if (direction == 0) { // (0 = Left, 1 = Right)
-            xOffset = -5;
-            xVelocity = -100;
+            xOffset = -1;
+            xVelocity = -50;
         } else if (direction == 1) {
-            xOffset = 5;
-            xVelocity = 100;
+            xOffset = 1;
+            xVelocity = 50;
         }
     }
 
     public void update() {
         handleDirection();
-        body.applyLinearImpulse(xVelocity, 0, body.getPosition().x, body.getPosition().y, true);
     }
 
     public void render() {
         handleDirection();
         shape.begin(ShapeRenderer.ShapeType.Filled);
-        shape.rect(xOffset, player.body.getPosition().y, 1, 1);
+        shape.rect(body.getPosition().x - 0.15f, body.getPosition().y - 0.15f, 0.3f, 0.3f); // Hardcoded the 0.15f because the math was too much and idc enough icl (hi future me when this causes a bug later)
         shape.end();
     }
 
