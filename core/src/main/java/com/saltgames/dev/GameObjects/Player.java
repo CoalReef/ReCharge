@@ -27,6 +27,9 @@ public class Player {
     Fixture fixture;
     PolygonShape hitboxShape;
     int jumpCounter = 0;
+    Bullet bullet;
+    int direction = 1; // Player will always start by looking right (0 = Left, 1 = Right)
+    boolean bulletExists = false; // Track if bullet exists for rendering and update purposes
 
     public Player (float xPos, float yPos, int speed, OrthographicCamera cam, World world, ContactListener contactListener, GameStateManager gsm) {
 
@@ -67,14 +70,12 @@ public class Player {
 
         // Left and right movement with A and D
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            if (body.getLinearVelocity().x <= MAX_SPEED) {
-                body.applyLinearImpulse(5f, 0, 0, 0, true);
-            }
+            body.setLinearVelocity(5f, body.getLinearVelocity().y);
+            direction = 1;
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            if (body.getLinearVelocity().x >= -MAX_SPEED) {
-                body.applyLinearImpulse(-5f, 0, 0, 0, true);
-            }
+            body.setLinearVelocity(-5f, body.getLinearVelocity().y);
+            direction = 0;
         }
         else {
             body.setLinearVelocity(0, body.getLinearVelocity().y);
@@ -82,7 +83,6 @@ public class Player {
 
         // Jumping
         final int MAX_JUMPS = 1; // ACTUALLY is this +1
-
 
         // Check if the player has been grounded yet and reset the jump count if so
         if (contactListener.isGrounded()) {
@@ -94,12 +94,23 @@ public class Player {
             body.applyLinearImpulse(0, 5f, 0, 0, true);
             jumpCounter++;
         }
+
+        // Shoot bullet
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+            bullet = new Bullet(gsm, direction, shape, world, this);
+            bulletExists = true;
+        }
     }
 
 
     public void update() {
         if (contactListener.isOnDamageBox()) {
             gsm.setState(new GameOver(gsm, gsm.getMain().getBatch()));
+        }
+
+        // Only call bullets update if it exists
+        if (bulletExists) {
+            bullet.update();
         }
     }
 
@@ -108,11 +119,17 @@ public class Player {
         shape.begin(ShapeRenderer.ShapeType.Filled);
         shape.rect(body.getPosition().x - 0.5f, body.getPosition().y - 0.5f, 1f, 1f); // Body positions make sprite follow hitbox
         shape.end();
+
+        // Only render the bullet if it even exists
+        if (bulletExists) {
+            bullet.render();
+        }
     }
 
     public void dispose() {
         hitboxShape.dispose();
         shape.dispose();
+        bullet.dispose();
     }
 
     // Getters and setters for position

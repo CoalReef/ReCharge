@@ -64,11 +64,13 @@ public class PlayState extends State{
     }
 
     public void update(float dt) {
-        player.handleInput();
-        player.update();
         cam.position.x = player.getXPos();
         cam.position.y = player.getYPos();
+
         world.step(dt, 6, 2);
+
+        player.handleInput();
+        player.update();
     }
 
     public void render() {
