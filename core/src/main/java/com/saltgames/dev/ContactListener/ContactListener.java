@@ -3,10 +3,7 @@ package com.saltgames.dev.ContactListener;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.saltgames.dev.GameObjects.Bullet;
-import com.saltgames.dev.GameObjects.DeathHitbox;
-import com.saltgames.dev.GameObjects.Platform;
-import com.saltgames.dev.GameObjects.Player;
+import com.saltgames.dev.GameObjects.*;
 
 public class ContactListener implements com.badlogic.gdx.physics.box2d.ContactListener {
 
@@ -25,12 +22,12 @@ public class ContactListener implements com.badlogic.gdx.physics.box2d.ContactLi
         } else if (objectA instanceof Player && objectB instanceof DeathHitbox) {
             isOnDamageBox = true;
 
-            // Return the bullet that needs to be deleted
+            // If a bullet hits a wall return what bullet should be deleted
         } else if (objectA instanceof Platform && objectB instanceof Bullet || objectA instanceof Bullet && objectB instanceof Platform) {
             bulletHitWall = true;
             if (objectA instanceof Platform && objectB instanceof Bullet) {
                 bulletToDelete = (Bullet) objectB;
-            } else if ( objectA instanceof Bullet && objectB instanceof Platform) {
+            } else if (objectA instanceof Bullet && objectB instanceof Platform) {
                 bulletToDelete = (Bullet) objectA;
             }
         }
