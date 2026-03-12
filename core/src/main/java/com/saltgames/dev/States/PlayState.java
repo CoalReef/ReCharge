@@ -9,13 +9,11 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.saltgames.dev.ContactListener.ContactListener;
-import com.saltgames.dev.GameObjects.Box;
-import com.saltgames.dev.GameObjects.DeathHitbox;
-import com.saltgames.dev.GameObjects.Platform;
-import com.saltgames.dev.GameObjects.Player;
+import com.saltgames.dev.GameObjects.*;
 import com.saltgames.dev.Manager.GameStateManager;
 
 
@@ -40,6 +38,7 @@ public class PlayState extends State{
     // Game Objects creation for marking hitbox types
     DeathHitbox deathHitbox = new DeathHitbox();
     Platform platform = new Platform();
+    BounceHitbox bounceHitbox = new BounceHitbox();
 
     public PlayState(GameStateManager gsm) {
         this.gsm = gsm;
@@ -59,13 +58,14 @@ public class PlayState extends State{
         world.setContactListener(contactListener);
 
         player = new Player(1f, 15f, 1, cam, world, contactListener, gsm); // Needs to be AFTER world, its being passed it
-        box = new Box(gsm, contactListener, world, shape, 1, 15, 1, 1);
+        box = new Box(gsm, contactListener, world, shape, 3, 15, 1, 1);
 
         // REMOVE BEFORE RELEASE** Used to see hitboxes
         debugRenderer = new Box2DDebugRenderer();
 
-        createHitboxes("PlatformCollisions", platform, world);
-        createHitboxes("DamageCollisions", deathHitbox, world);
+        createHitboxes("PlatformCollisions", platform, world, 0);
+        createHitboxes("DamageCollisions", deathHitbox, world, 0);
+        createHitboxes("BounceCollisions", bounceHitbox, world, 5);
 
     }
 
@@ -76,9 +76,6 @@ public class PlayState extends State{
 
         world.step(dt, 6, 2);
         player.handleInput();
-
-        player.handleInput();
-        player.update();
     }
 
     public void render() {
@@ -93,7 +90,7 @@ public class PlayState extends State{
         player.dispose();
     }
 
-    public void createHitboxes(String layerName, Object layerType, World world) {
+    public void createHitboxes(String layerName, Object layerType, World world, int bounciness) {
         // Get the platform collision layer and objects from layer
         collisionLayer = map.getLayers().get(layerName);
         collisionLayerObjects = collisionLayer.getObjects();
@@ -133,6 +130,7 @@ public class PlayState extends State{
             // Create Fixture
             FixtureDef platformFixtureDef = new FixtureDef();
             platformFixtureDef.shape = platformShape;
+            platformFixtureDef.restitution = bounciness;
             Fixture platformFixture = platformBody.createFixture(platformFixtureDef);
         }
     }

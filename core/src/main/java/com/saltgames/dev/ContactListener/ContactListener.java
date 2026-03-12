@@ -17,9 +17,9 @@ public class ContactListener implements com.badlogic.gdx.physics.box2d.ContactLi
         Object objectA = contact.getFixtureA().getBody().getUserData();
         Object objectB = contact.getFixtureB().getBody().getUserData();
 
-        if (objectA instanceof Player && objectB instanceof Platform) {
+        if (objectA instanceof Player && objectB instanceof Platform || objectA instanceof Platform && objectB instanceof Player) {
             isGrounded = true;
-        } else if (objectA instanceof Player && objectB instanceof DeathHitbox) {
+        } else if (objectA instanceof Player && objectB instanceof DeathHitbox || objectA instanceof DeathHitbox && objectB instanceof Player) {
             isOnDamageBox = true;
 
             // If a bullet hits a wall return what bullet should be deleted
@@ -38,9 +38,9 @@ public class ContactListener implements com.badlogic.gdx.physics.box2d.ContactLi
         Object objectA = contact.getFixtureA().getBody().getUserData();
         Object objectB = contact.getFixtureB().getBody().getUserData();
 
-        if (objectA instanceof Player && objectB instanceof Platform) {
+        if (objectA instanceof Player && objectB instanceof Platform || objectA instanceof Platform && objectB instanceof Player) {
             isGrounded = false;
-        } else if (objectA instanceof Player && objectB instanceof DeathHitbox) {
+        } else if (objectA instanceof Player && objectB instanceof DeathHitbox || objectA instanceof DeathHitbox && objectB instanceof Player) {
             isOnDamageBox = false;
         } else if (objectA instanceof Platform && objectB instanceof Bullet || objectA instanceof Bullet && objectB instanceof Platform) {
             bulletHitWall = false;
