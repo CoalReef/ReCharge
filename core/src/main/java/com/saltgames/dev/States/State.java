@@ -5,7 +5,7 @@ public abstract class State {
 
     }
 
-    public abstract void update(float dt);
+    public abstract void update(float dt); // dt = DeltaTime, keeps game running the same across different framerates
 
     public abstract void render();
 

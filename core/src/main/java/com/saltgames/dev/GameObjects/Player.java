@@ -9,6 +9,8 @@ import com.saltgames.dev.ContactListener.ContactListener;
 import com.saltgames.dev.Manager.GameStateManager;
 import com.saltgames.dev.States.GameOver;
 
+import java.util.ArrayList;
+
 public class Player {
     // Constructor defined variables
     float xPos;
@@ -27,6 +29,11 @@ public class Player {
     Fixture fixture;
     PolygonShape hitboxShape;
     int jumpCounter = 0;
+    Bullet bullet;
+    int direction = 1; // Player will always start by looking right (0 = Left, 1 = Right)
+    boolean bulletExists = false; // Track if bullet exists for rendering and update purposes
+    ArrayList<Bullet> bulletsArray;
+    Bullet hit;
 
     public Player (float xPos, float yPos, int speed, OrthographicCamera cam, World world, ContactListener contactListener, GameStateManager gsm) {
 
@@ -58,6 +65,9 @@ public class Player {
         fixtureDef.shape = hitboxShape;
         fixture = body.createFixture(fixtureDef);
 
+        // Initialize Bullet Array
+        bulletsArray = new ArrayList<Bullet>();
+
     }
 
     // User input logic
@@ -68,9 +78,11 @@ public class Player {
         // Left and right movement with A and D
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             body.setLinearVelocity(5f, body.getLinearVelocity().y);
+            direction = 1;
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             body.setLinearVelocity(-5f, body.getLinearVelocity().y);
+            direction = 0;
         }
         else {
             body.setLinearVelocity(0, body.getLinearVelocity().y);
@@ -78,7 +90,6 @@ public class Player {
 
         // Jumping
         final int MAX_JUMPS = 1; // ACTUALLY is this +1
-
 
         // Check if the player has been grounded yet and reset the jump count if so
         if (contactListener.isGrounded()) {
@@ -90,12 +101,46 @@ public class Player {
             body.applyLinearImpulse(0, 5f, 0, 0, true);
             jumpCounter++;
         }
+
+        // Shoot bullet
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+            bullet = new Bullet(gsm, direction, shape, world, this);
+            bulletExists = true;
+            bulletsArray.add(bullet);
+        }
+
+
+        // Check if the bullet hit a wall and should be deleted
+        if (contactListener.BulletHitWall()) {
+            hit = contactListener.bulletToDelete();
+
+            // Get rid of the hitbox
+            if (!world.isLocked()) {
+                world.destroyBody(hit.body);
+                if (bulletsArray.isEmpty()) {
+                    bulletExists = false;
+                }
+            }
+            bulletsArray.remove(hit);
+
+            // Check if there ARE bullets to stop rendering and updating if none exist
+            if (bulletsArray.isEmpty()) {
+                bulletExists = false;
+            }
+        }
     }
 
 
     public void update() {
         if (contactListener.isOnDamageBox()) {
             gsm.setState(new GameOver(gsm, gsm.getMain().getBatch()));
+        }
+
+        // Only call bullets update if it exists
+        if (bulletExists) {
+            for (int i = 0; i < bulletsArray.size(); i++) {
+                bulletsArray.get(i).update();
+            }
         }
     }
 
@@ -104,11 +149,24 @@ public class Player {
         shape.begin(ShapeRenderer.ShapeType.Filled);
         shape.rect(body.getPosition().x - 0.5f, body.getPosition().y - 0.5f, 1f, 1f); // Body positions make sprite follow hitbox
         shape.end();
+
+        // Only render the bullet if it even exists
+        if (bulletExists) {
+            for (int i = 0; i < bulletsArray.size(); i++) {
+                bulletsArray.get(i).render();
+            }
+        }
     }
 
     public void dispose() {
         hitboxShape.dispose();
         shape.dispose();
+
+        if (bulletExists) {
+            for (int i = 0; i < bulletsArray.size(); i++) {
+                bulletsArray.get(i).dispose();
+            }
+        }
     }
 
     // Getters and setters for position

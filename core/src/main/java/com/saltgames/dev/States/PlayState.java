@@ -1,6 +1,7 @@
 package com.saltgames.dev.States;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.saltgames.dev.ContactListener.ContactListener;
+import com.saltgames.dev.GameObjects.Box;
 import com.saltgames.dev.GameObjects.DeathHitbox;
 import com.saltgames.dev.GameObjects.Platform;
 import com.saltgames.dev.GameObjects.Player;
@@ -32,6 +34,8 @@ public class PlayState extends State{
     MapObjects collisionLayerObjects;
     Box2DDebugRenderer debugRenderer;
     ContactListener contactListener;
+    Box box;
+    ShapeRenderer shape;
 
     // Game Objects creation for marking hitbox types
     DeathHitbox deathHitbox = new DeathHitbox();
@@ -39,6 +43,7 @@ public class PlayState extends State{
 
     public PlayState(GameStateManager gsm) {
         this.gsm = gsm;
+        shape = new ShapeRenderer();
 
         map = new TmxMapLoader().load("industrial-box-map.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(map, 1/32f); // 1 World tile = 32 Pixels
@@ -54,6 +59,7 @@ public class PlayState extends State{
         world.setContactListener(contactListener);
 
         player = new Player(1f, 15f, 1, cam, world, contactListener, gsm); // Needs to be AFTER world, its being passed it
+        box = new Box(gsm, contactListener, world, shape, 1, 15, 1, 1);
 
         // REMOVE BEFORE RELEASE** Used to see hitboxes
         debugRenderer = new Box2DDebugRenderer();
@@ -67,8 +73,12 @@ public class PlayState extends State{
         player.update();
         cam.position.x = player.getXPos();
         cam.position.y = player.getYPos();
+
         world.step(dt, 6, 2);
         player.handleInput();
+
+        player.handleInput();
+        player.update();
     }
 
     public void render() {
