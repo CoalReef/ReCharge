@@ -30,6 +30,13 @@ public class ContactListener implements com.badlogic.gdx.physics.box2d.ContactLi
             } else if (objectA instanceof Bullet && objectB instanceof Platform) {
                 bulletToDelete = (Bullet) objectA;
             }
+        } else if (objectA instanceof Box && objectB instanceof Bullet || objectA instanceof Bullet && objectB instanceof Box) {
+            bulletHitWall = true;
+            if (objectA instanceof Box && objectB instanceof Bullet) {
+                bulletToDelete = (Bullet) objectB;
+            } else if (objectA instanceof Bullet && objectB instanceof Box) {
+                bulletToDelete = (Bullet) objectA;
+            }
         }
     }
 
@@ -43,6 +50,8 @@ public class ContactListener implements com.badlogic.gdx.physics.box2d.ContactLi
         } else if (objectA instanceof Player && objectB instanceof DeathHitbox || objectA instanceof DeathHitbox && objectB instanceof Player) {
             isOnDamageBox = false;
         } else if (objectA instanceof Platform && objectB instanceof Bullet || objectA instanceof Bullet && objectB instanceof Platform) {
+            bulletHitWall = false;
+        } else if (objectA instanceof Box && objectB instanceof Bullet || objectA instanceof Bullet && objectB instanceof Box) {
             bulletHitWall = false;
         }
     }

@@ -3,6 +3,7 @@ package com.saltgames.dev.Manager;
 import com.badlogic.gdx.Gdx;
 import com.saltgames.dev.Main;
 import com.saltgames.dev.States.PlayState;
+import com.saltgames.dev.States.StartMenu;
 import com.saltgames.dev.States.State;
 
 import java.util.Stack;
@@ -13,7 +14,7 @@ public class GameStateManager {
 
     public GameStateManager(Main main) {
         states = new Stack<State>();
-        states.push(new PlayState(this));
+        states.push(new StartMenu(this));
         this.main = main;
     }
 

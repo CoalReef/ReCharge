@@ -65,7 +65,7 @@ public class PlayState extends State{
 
         createHitboxes("PlatformCollisions", platform, world, 0);
         createHitboxes("DamageCollisions", deathHitbox, world, 0);
-        createHitboxes("BounceCollisions", bounceHitbox, world, 5);
+        createHitboxes("BounceCollisions", bounceHitbox, world, 2);
 
     }
 
